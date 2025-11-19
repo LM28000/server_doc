@@ -1,50 +1,58 @@
-# 💾 02 - Applications & Services (Docker)
+# 💾 02 - Applications & Services
 
-## 🔄 Flux de Travail (Workflows)
+## ☁️ Cloud Personnel & Productivité
+Services exposés principalement via `dmz_net`.
 
-Le serveur est organisé par finalité métier :
-
-* **🎬 Média (Acquisition & Traitement) :** Automatisation complète via la suite *arr (Radarr, Sonarr) couplée à Overseerr pour les demandes et Plex pour la diffusion. Tdarr optimise les fichiers.
-* **🧠 IA & LLM :** Hébergement local de modèles (Ollama) avec interface web (Open WebUI).
-* **☁️ Cloud & Contenu :** Nextcloud pour les données perso, Vaultwarden pour les mots de passe.
-* **📊 Observabilité :** Stack Prometheus + Grafana pour surveiller la santé du système.
-
----
-
-## 🐳 Architecture Docker
-
-### Réseaux Docker
-* **`dmz_net`** : Contient les services exposés au reverse proxy (Plex, Nextcloud, Overseerr).
-* **`internal_net`** : Contient les services backend, bases de données et services d'acquisition.
-* **Communication** : Le Reverse Proxy dirige le trafic vers le `dmz_net`.
-
-### Liste des Services Critiques
-
-| Service | Rôle | Réseau(x) | Ports (Hôte:Conteneur) | Image |
+| Service | Image | Ports Exposés | Volumes Clés | Notes |
 | :--- | :--- | :--- | :--- | :--- |
-| **Plex** | Serveur Média | `dmz`, `internal` | `32400:32400` | `lscr.io/linuxserver/plex` |
-| **Nextcloud** | Cloud Perso | `dmz`, `internal` | `8081:80` | `nextcloud` |
-| **Vaultwarden** | Mots de passe | `dmz` | `3012`, `8084` | `vaultwarden/server` |
-| **Overseerr** | Requêtes Média | `dmz`, `internal` | `5000:5055` | `sctx/overseerr` |
-| **Qbittorrent-VPN** | Téléchargement | `internal` | `8080:8080` | `binhex/arch-qbittorrentvpn` |
-| **Radarr** | Gestion Films | `internal` | `7878:7878` | `linuxserver/radarr` |
-| **Sonarr** | Gestion Séries | `internal` | `8989:8989` | `linuxserver/sonarr` |
-| **Tdarr Server** | Transcodage | `internal` | `8265`, `8266` | `haveagitgat/tdarr` |
-| **Ollama** | Moteur IA | N/A (Local) | `11434:11434` | `ollama/ollama` |
-| **Open WebUI** | Interface IA | N/A (Local) | `3001:8080` | `open-webui/open-webui` |
-| **Prometheus** | Métriques | `internal` | `9090:9090` | `prom/prometheus` |
-| **Grafana** | Dashboards | `internal` | `3000:3000` | `grafana/grafana` |
+| **Nextcloud** | `nextcloud:latest` | `8081:80` | `nextcloud_data`, `nextcloud_apps` | Dépend de MariaDB. |
+| **Nextcloud Cron**| `nextcloud:latest` | - | (Identiques à App) | Container sidecar pour exécuter les tâches de fond (cron.php). |
+| **Roundcube** | `roundcubemail` | `8085:80` | `roundcube_config` | Webmail. |
+| **Actual Budget**| `actual-server` | `5006:5006` | `actual_budget_data` | Gestion financière. |
+| **Vaultwarden** | `vaultwarden/server`| `8084:80`, `3012` | `vaultwarden_data` | Gestionnaire de mots de passe. |
 
 ---
 
-## 🔗 Dépendances & Intégrations Spécifiques
+## 🎬 Média Center & Automatisation
+Stack backend isolée principalement sur `internal_net`, sauf pour la diffusion (Plex) et la requête (Overseerr).
 
-### Nœud de Transcodage Externe
-* **Machine :** MacBook Pro M4
-* **Rôle :** Nœud Tdarr Externe (Worker)
-* **Fonctionnement :** Le serveur Tdarr délègue les tâches lourdes de transcodage au MacBook via le réseau LAN pour profiter de l'encodage hardware Apple Silicon.
+| Service | Rôle | Ports | Réseau | Détails |
+| :--- | :--- | :--- | :--- | :--- |
+| **Plex** | Diffusion | `32400` | DMZ + Internal | Transcodage via `/transcode` sur cache. |
+| **Overseerr** | Requêtes | `5000` | DMZ + Internal | Interface unifiée pour Radarr/Sonarr. |
+| **Qbittorrent**| Download | `8080` | Internal | **VPN Actif** (OpenVPN). Interface WebUI. |
+| **Prowlarr** | Indexeur | `9696` | Internal | Gère les trackers pour les *arrs. |
+| **FlareSolverr**| Proxy | `8191` | Internal | Contournement Cloudflare pour Prowlarr. |
+| **Radarr** | Films | `7878` | Internal | Gestion bibliothèque Films. |
+| **Sonarr** | Séries | `8989` | Internal | Gestion bibliothèque Séries. |
+| **Bazarr** | Sous-titres | `6767` | Internal | Téléchargement auto des sous-titres. |
+| **Tautulli** | Stats | `8181` | Internal | Statistiques de lecture Plex. |
 
-### Gestion des Utilisateurs (PUID/PGID)
-La majorité des conteneurs utilisent des variables d'environnement pour gérer les permissions sur les fichiers partagés :
-* `PUID` : [À COMPLÉTER]
-* `PGID` : [À COMPLÉTER]
+### ⚡ Transcodage Distribué (Tdarr)
+Tdarr est configuré pour optimiser la médiathèque (HEVC/H265).
+* **Serveur :** `tdarr` (Ports 8265 Web / 8266 Server).
+* **Nœud Interne :** Activé (`internalNode=true`).
+* **Nœud Externe :** MacBook Pro M4 connecté via LAN.
+
+---
+
+## 🧠 Intelligence Artificielle (IA)
+Stack dédiée à l'inférence locale de LLM.
+
+| Service | Image | Ports | Volumes | Notes |
+| :--- | :--- | :--- | :--- | :--- |
+| **Ollama** | `ollama/ollama` | `11434` | `ollama_data` | Moteur d'inférence. API Backend. |
+| **Open WebUI**| `open-webui` | `3001` | `open_webui_data` | Interface Chat (style ChatGPT). Connecté à Ollama via `http://ollama:11434`. |
+
+---
+
+## 📊 Monitoring & Maintenance
+
+| Service | Rôle | Ports | Notes |
+| :--- | :--- | :--- | :--- |
+| **Prometheus** | Collecte | `9090` | Scrape Node Exporter & cAdvisor. |
+| **Grafana** | Visu | `3000` | Dashboards unifiés. Admin via env vars. |
+| **cAdvisor** | Docker Stats | `8098` | Métriques CPU/RAM par conteneur. |
+| **Node Exp.** | Host Stats | `9100` | Métriques système hôte. |
+| **Socket Proxy**| Sécurité | `2375` | Expose `docker.sock` en lecture seule pour le monitoring. |
+| **Watchtower** | Updates | - | Vérification toutes les 6h (`21600s`). Exclusions via labels. |
