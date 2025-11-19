@@ -1,16 +1,25 @@
 # 📘 Documentation Serveur Hôte
 
+Bienvenue dans la documentation technique du serveur domestique. Ce dépôt contient les détails de configuration, les procédures de maintenance et l'architecture des services.
+
 ## 📌 Vue d'ensemble
 
-Ce dépôt documente l'infrastructure du serveur domestique, hébergeant des services de média, de cloud personnel, d'intelligence artificielle et de domotique.
+* **Rôle :** Hôte Docker pour Média, IA, Domotique et Monitoring.
+* **OS :** Debian 13.1
+* **Technologie principale :** Docker & Docker Compose
+* **Stockage :** Pool MergerFS + Parité SnapRAID
 
-* **Architecture :** Docker Compose (Multi-stack)
-* **Sécurité :** Segmentation réseau (`dmz_net` vs `internal_net`)
-* **Stockage :** Stratégie hiérarchisée (M.2 > SSD Cache > HDD Pool)
+## 📂 Structure de la documentation
 
-## 🔄 Flux de Travail (Workflows)
+1.  [**Infrastructure Physique & Système**](./01_infrastructure.md)
+    * Détails Hardware, Réseau (IPs, MAC), OS Hôte.
+2.  [**Applications & Services**](./02_applications.md)
+    * Architecture Docker, Flux de travail (Média, IA), Ports.
+3.  [**Maintenance & DRP**](./03_maintenance_drp.md)
+    * Mises à jour, Sauvegardes, Restauration.
 
-Le serveur orchestre plusieurs processus complexes, notamment l'acquisition de médias et l'inférence IA locale.
+---
+*Dernière mise à jour : 20/11/2025*
 
 ```mermaid
 flowchart TB
