@@ -7,7 +7,6 @@ Ce document illustre les différents états par lesquels passe un fichier vidéo
 ```mermaid
 ---
 config:
-  layout: elk
   theme: neutral
 ---
 stateDiagram-v2
