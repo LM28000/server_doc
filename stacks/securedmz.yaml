@@ -1,0 +1,550 @@
+version: '3.8'
+
+# ===============================
+# 1. DÉFINITION DES RÉSEAUX
+# ===============================
+networks:
+  dmz_net:
+    name: dmz_net
+    driver: bridge
+  internal_net:
+    name: internal_net
+    driver: bridge
+
+# ===============================
+# 2. SERVICES
+# ===============================
+
+services:
+
+  dashboard:
+    image: nginx:alpine
+    container_name: homelab_dashboard
+    restart: unless-stopped
+    ports:
+      - "8089:80"
+    volumes:
+      - /opt/homelab-dash:/usr/share/nginx/html:ro
+    networks:
+      - dmz_net
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime_kuma
+    restart: unless-stopped
+    volumes:
+      - /opt/uptime-kuma:/app/data
+    ports:
+      - 3002:3001
+    networks:
+      - dmz_net
+    # Pas besoin d'exposer les ports si tu utilises NPM sur le même réseau
+  ttyd:
+    image: tsl0922/ttyd:latest
+    container_name: ttyd
+    restart: unless-stopped
+    ports:
+      - 7681:7681
+    volumes:
+      # On monte tes clés et tes hosts connus pour la persistance
+      - /home/louis/.ssh/id_rsa:/root/.ssh/id_rsa:ro
+      - /home/louis/.ssh/known_hosts:/root/.ssh/known_hosts
+    entrypoint: 
+      - /bin/sh
+      - -c
+      - |
+        apt-get update && apt-get install -y openssh-client && \
+        ttyd -p 7681 -W -c admin:admin ssh louis@192.168.0.75
+    networks:
+      - internal_net
+
+      - dmz_net
+  
+  # ----------------------------------------------------
+  # ZONE DMZ
+  # ----------------------------------------------------
+
+  roundcube_app:
+    image: roundcube/roundcubemail:latest
+    container_name: roundcube_app
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - ROUNDCUBEMAIL_DEFAULT_HOST=${MAIL_HOST}
+      - ROUNDCUBEMAIL_SMTP_SERVER=${MAIL_SMTP}
+      - ROUNDCUBEMAIL_PLUGINS=archive,zipdownload
+      - ROUNDCUBEMAIL_DEFAULT_PORT=993
+      - ROUNDCUBEMAIL_SMTP_PORT=465
+    volumes:
+      - roundcube_config:/var/www/html/config
+      - roundcube_data:/var/www/html/logs
+    networks:
+      - dmz_net
+      - internal_net
+    ports:
+      - 8085:80
+
+  actual_budget:
+    image: actualbudget/actual-server:latest
+    container_name: actual_budget
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - actual_budget_data:/data
+    networks:
+      - dmz_net
+    ports:
+      - 5006:5006
+
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - VERSION=docker
+      - ADVERTISED_IPs=http://192.168.0.75:32400/
+    network_mode: host
+    volumes:
+      - plex_config:/config
+      - ${PLEX_TV_PATH}:/tv
+      - ${PLEX_MOVIES_PATH}:/movies
+      - ${PLEX_CHILDREN_PATH}:/children
+      - ${PLEX_PHOTOS_PATH}:/photos
+      - /mnt/diskE/plex_temp:/transcode
+    ports:
+      - 32400:32400/tcp
+      - 32400:32400/udp
+
+  overseerr:
+    image: sctx/overseerr:develop
+    container_name: overseerr
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - overseerr_config:/app/config
+    networks:
+      - dmz_net
+      - internal_net
+    ports:
+      - 5000:5055
+
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - WEBSOCKET_ENABLED=true
+      - WEBAUTH_ENABLED=true
+      - ADMIN_TOKEN=${VAULTWARDEN_ADMIN_TOKEN}
+    volumes:
+      - vaultwarden_data:/data
+    networks:
+      - dmz_net
+    ports:
+      - 3012:3012
+      - 8084:80
+
+  nextcloud_app:
+    image: nextcloud:latest
+    container_name: nextcloud_app
+    restart: unless-stopped
+    depends_on:
+      - nextcloud_db
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - MYSQL_HOST=${NC_DB_HOST}
+      - MYSQL_DATABASE=${NC_DB_NAME}
+      - MYSQL_USER=${NC_DB_USER}
+      - MYSQL_PASSWORD=${NC_DB_PASSWORD}
+    volumes:
+      # Volumes de l'application (config/core files)
+      - nextcloud_data:/var/www/html 
+      # Volumes des applications custom
+      - nextcloud_apps:/var/www/html/custom_apps
+      # Volume des données utilisateur (le plus important pour le cron)
+      - ${NC_DATA_POOL_PATH}:/var/www/html/data 
+    networks:
+      - dmz_net
+      - internal_net
+    ports:
+      - 8081:80
+
+  # ----------------------------------------------------
+  # NOUVEAU SERVICE CRON POUR NEXTCLOUD
+  # ----------------------------------------------------
+  nextcloud_cron:
+    image: nextcloud:latest # Doit correspondre à l'image de nextcloud_app
+    container_name: nextcloud_cron
+    restart: unless-stopped
+    # Ce container n'a besoin que du service 'nextcloud_app' pour exécuter le cron.php
+    depends_on:
+      - nextcloud_app 
+    environment:
+      # PUID/PGID doivent être les mêmes que nextcloud_app
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      # DOIT monter les mêmes volumes que nextcloud_app pour accéder aux fichiers
+      - nextcloud_data:/var/www/html 
+      - nextcloud_apps:/var/www/html/custom_apps
+      - ${NC_DATA_POOL_PATH}:/var/www/html/data 
+    # L'entrypoint est remplacé par le script officiel pour le cron
+    entrypoint: /cron.sh
+    # Crucial : le cron n'a besoin d'être que sur le réseau de Nextcloud
+    networks:
+      - dmz_net 
+      - internal_net
+    # Pas de port à exposer, ce service est purement interne
+
+  docker_socket_proxy:
+    image: tecnativa/docker-socket-proxy
+    container_name: nextcloud_dsp
+    restart: unless-stopped
+    environment:
+      - CONTAINERS=1
+      - IMAGES=1
+      - NETWORKS=1
+      - SERVICES=0
+      - TASKS=0
+      - POST=1
+      - DELETE=1
+      - GET=1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - dmz_net
+    ports:
+      - 2375:2375
+
+  # ----------------------------------------------------
+  # ZONE INTERNE
+  # ----------------------------------------------------
+
+  nextcloud_db:
+    image: mariadb:10.6
+    container_name: nextcloud_db
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=${NC_DB_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${NC_DB_NAME}
+      - MYSQL_USER=${NC_DB_USER}
+      - MYSQL_PASSWORD=${NC_DB_PASSWORD}
+    volumes:
+      - nextcloud_db_data:/var/lib/mysql
+    networks:
+      - internal_net
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - TZ=${TZ}
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_INTERVAL=21600
+    networks:
+      - internal_net
+      - dmz_net
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - prowlarr_config:/config
+    networks:
+      - internal_net
+    ports:
+      - 9696:9696
+
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    restart: unless-stopped
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    environment:
+      - TZ=${TZ}
+    networks:
+      - internal_net
+      - dmz_net
+    ports:
+      - 8191:8191
+
+  qbittorrent:
+    image: binhex/arch-qbittorrentvpn
+    container_name: qbittorrent
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - WEBUI_PORT=8080
+      - VPN_PROV=${VPN_PROVIDER}
+      - VPN_USER=${VPN_USERNAME}
+      - VPN_PASS=${VPN_PASSWORD}
+      - STRICT_PORT_FORWARD=no
+      - ENABLE_PRIVOXY=no
+      - LAN_NETWORK=${LAN_NETWORK_CIDR}
+      - OPENVPN_CONFIG=/config/openvpn/openvpn.ovpn
+      - CUSTOM_DNS=8.8.8.8
+    volumes:
+      - qbittorrent_config:/config
+      - ${DOWNLOAD_PATH}:/data
+      - ${VPN_CONFIG_PATH}:/config/openvpn
+    networks:
+      - internal_net
+      - dmz_net
+    ports:
+      - 8080:8080
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - radarr_config:/config
+      - ${PLEX_MOVIES_PATH}:/movies/movies
+      - ${PLEX_CHILDREN_PATH}:/children/children
+      - ${DOWNLOAD_PATH}:/downloads
+    networks:
+      - internal_net
+    ports:
+      - 7878:7878
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - sonarr_config:/config
+      - ${PLEX_TV_PATH}:/tv
+      - ${DOWNLOAD_PATH}:/downloads
+    networks:
+      - internal_net
+    ports:
+      - 8989:8989
+
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - bazarr_config:/config
+      - ${PLEX_MOVIES_PATH}:/movies
+      - ${PLEX_TV_PATH}:/tv
+      - ${PLEX_CHILDREN_PATH}:/children
+    networks:
+      - internal_net
+    ports:
+      - 6767:6767
+
+  tautulli:
+    image: lscr.io/linuxserver/tautulli:latest
+    container_name: tautulli
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - tautulli_config:/config
+    networks:
+      - internal_net
+    ports:
+      - 8181:8181
+
+  # ----------------------------------------------------
+  # AJOUT DU SERVICE TDARR
+  # ----------------------------------------------------
+  tdarr:
+    image: haveagitgat/tdarr:latest
+    container_name: tdarr
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - UMASK_SET=002
+      - serverip=0.0.0.0      # CORRIGÉ : Assure que le serveur écoute correctement
+      - serverport=8266
+      - webport=8265
+      - internalNode=true # AJOUT CRITIQUE : Active le Node intégré
+      - inContainer=true      # Recommandé par la documentation
+      # Si vous souhaitez forcer une version spécifique de FFmpeg (ex: pour GPU) :
+      #- ffmpegVersion=7
+      - nodeName=TdarrInternalNode
+      - auth=false
+    volumes:
+      - tdarr_config:/app/configs
+      - tdarr_server:/app/server
+      - ${PLEX_MOVIES_PATH}:/movies
+      - ${PLEX_TV_PATH}:/tv
+      - ${PLEX_CHILDREN_PATH}:/children
+      - ${TDARR_TEMP_PATH}:/temp
+    networks:
+      - internal_net
+    ports:
+      - 8265:8265
+      - 8266:8266
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+
+  # ----------------------------------------------------
+  # MONITORING
+  # ----------------------------------------------------
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    restart: unless-stopped
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    ports:
+      - 8098:8080
+    networks:
+      - internal_net
+
+  node_exporter:
+    image: prom/node-exporter:latest
+    container_name: node_exporter
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host)($$|/)'
+    ports:
+      - 9100:9100
+    networks:
+      - internal_net
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    ports:
+      - 9090:9090
+    networks:
+      - internal_net
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+    ports:
+      - 3000:3000
+    networks:
+      - internal_net
+      
+# ===============================
+# 3. VOLUMES NOMMÉS
+# ===============================
+
+volumes:
+  roundcube_config:
+    name: roundcube_config
+  roundcube_data:
+    name: roundcube_data
+  roundcube_db_data:
+    name: roundcube_db_data
+  actual_budget_data:
+    name: actual_budget_data
+  plex_config:
+    name: plex_config
+  overseerr_config:
+    name: overseerr_config
+  vaultwarden_data:
+    name: vaultwarden_data
+  nextcloud_data:
+    name: nextcloud_data
+  nextcloud_apps:
+    name: nextcloud_apps
+  nextcloud_db_data:
+    name: nextcloud_db_data
+  qbittorrent_config:
+    name: qbittorrent_config
+  radarr_config:
+    name: radarr_config
+  sonarr_config:
+    name: sonarr_config
+  bazarr_config:
+    name: bazarr_config
+  tautulli_config:
+    name: tautulli_config
+  prowlarr_config:
+    name: prowlarr_config
+  prometheus_data:
+    name: prometheus_data
+  grafana_data:
+    name: grafana_data
+  # ----------------------------------------------------
+  # NOUVEAUX VOLUMES TDARR
+  # ----------------------------------------------------
+  tdarr_config:
+    name: tdarr_config
+  tdarr_server:
+    name: tdarr_server
