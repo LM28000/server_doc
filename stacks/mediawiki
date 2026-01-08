@@ -1,0 +1,45 @@
+version: '3.3'
+
+services:
+  # 1. Base de données MariaDB
+  database:
+    image: mariadb:10.6
+    container_name: mediawiki_db
+    environment:
+      # Modifiez ces valeurs pour vos propres identifiants sécurisés
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
+      - MARIADB_USER=${MARIADB_USER}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+    volumes:
+      # Sauvegarde des données persistantes
+      - ./data/db:/var/lib/mysql
+    restart: unless-stopped
+    # Port interne (ne doit pas être exposé en production)
+    ports:
+      - "3306:3306"
+
+  # 2. Service MediaWiki
+  mediawiki:
+    image: mediawiki:1.39
+    container_name: mediawiki_app
+    links:
+      # Permet à MediaWiki de trouver la DB via le nom 'database'
+      - database:database
+    environment:
+      # Variables pour l'installation automatique ou la configuration initiale
+      - MEDIAWIKI_DB_TYPE=${MEDIAWIKI_DB_TYPE}
+      - MEDIAWIKI_DB_HOST=${MEDIAWIKI_DB_HOST}
+      - MEDIAWIKI_DB_NAME=${MEDIAWIKI_DB_NAME}
+      - MEDIAWIKI_DB_USER=${MEDIAWIKI_DB_USER}
+      - MEDIAWIKI_DB_PASSWORD=${MEDIAWIKI_DB_PASSWORD} # Le même que ci-dessus
+    volumes:
+      # Dossier pour les extensions, skins, et images téléchargées
+      - ./data/images:/var/www/html/images
+      - /opt/mediawiki-stack/config/LocalSettings.php:/var/www/html/LocalSettings.php
+    ports:
+      # Port public:Port interne du container (ex. 8080:80)
+      - "8083:80"
+    restart: unless-stopped
+    depends_on:
+      - database
