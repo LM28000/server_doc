@@ -1,0 +1,12 @@
+services:
+  authelia:
+    image: authelia/authelia:latest
+    container_name: authelia
+    volumes:
+      # CHEMIN HÔTE (Absolu) : CHEMIN CONTENEUR (Fixe)
+      - /portainer/Files/AppData/Config/Authelia:/config
+    ports:
+      - 9091:9091
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Paris
