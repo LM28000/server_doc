@@ -1,0 +1,19 @@
+services:
+  kopia:
+    image: kopia/kopia:latest
+    container_name: kopia
+    restart: unless-stopped
+    ports:
+      - "8200:8200"
+    environment:
+      - TZ=Europe/Paris
+    volumes:
+      - /docker/services/kopia/config:/app/config
+      - /docker/services/kopia/cache:/app/cache
+      - /docker:/data:ro
+    command:
+      - server
+      - start
+      - --insecure
+      - --address=0.0.0.0:8200
+      - --without-password
