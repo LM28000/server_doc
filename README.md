@@ -8,6 +8,7 @@ Bienvenue dans la documentation technique du serveur domestique **Antigravity**.
 - [Structure de la documentation](#-structure-de-la-documentation)
 - [Diagrammes](#-diagrammes)
 - [Guide de démarrage rapide](#-guide-de-démarrage-rapide)
+- [Liste complète des services](./SERVICES.md) 📋
 - [Index complet](./INDEX.md) 🗂️
 - [Glossaire technique](./GLOSSARY.md) 📖
 
@@ -66,12 +67,21 @@ Bienvenue dans la documentation technique du serveur domestique **Antigravity**.
 
 ### Services principaux
 
-| Service | Port | URL d'accès |
-|---------|------|-------------|
-| Plex | 32400 | Via reverse proxy |
-| Overseerr | 5000 | Via reverse proxy |
-| Grafana | 3000 | Via reverse proxy |
-| Nextcloud | 8081 | Via reverse proxy |
+| Service | Port | URL d'accès | Catégorie |
+|---------|------|-------------|-----------|
+| **Dashboard** | 8089 | Via reverse proxy | 🏠 Accueil |
+| **Authelia** | 9091 | Via reverse proxy | 🔐 SSO |
+| **Plex** | 32400 | Via reverse proxy | 🎬 Média |
+| **Overseerr** | 5000 | Via reverse proxy | 🎬 Média |
+| **Nextcloud** | 8081 | Via reverse proxy | ☁️ Cloud |
+| **Vaultwarden** | 8084 | Via reverse proxy | 🔐 Sécurité |
+| **Grafana** | 3000 | Via reverse proxy | 📊 Monitoring |
+| **Uptime Kuma** | 3002 | Via reverse proxy | 📊 Monitoring |
+| **Kopia** | 8200 | Via reverse proxy | 💾 Sauvegardes |
+| **MediaWiki** | 8083 | Via reverse proxy | 📚 Wiki |
+| **IT-Tools** | 8090 | Via reverse proxy | 🛠️ Outils |
+
+> 💡 **Point d'entrée recommandé** : Dashboard (port 8089) qui centralise l'accès à tous les services.
 
 ---
 
@@ -84,4 +94,4 @@ Pour toute question ou amélioration, veuillez consulter les diagrammes appropri
 
 ---
 
-*Dernière mise à jour : 18/01/2025*
+*Dernière mise à jour : 18/01/2026*

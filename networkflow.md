@@ -39,6 +39,8 @@ flowchart TD
   end
  subgraph DMZ_NET["dmz_net (Services Exposés)"]
     direction LR
+        DASH("Dashboard")
+        AUTH("Authelia (SSO)")
         RC("Roundcube")
         AB("Actual Budget")
         PL("Plex")
@@ -47,6 +49,13 @@ flowchart TD
         NC("Nextcloud")
         P("Portfolio")
         GF("Grafana")
+        UK("Uptime Kuma")
+        DZ("Dozzle")
+        GL("Glances")
+        IT("IT-Tools")
+        MW("MediaWiki")
+        KP("Kopia")
+        TTYD("TTYD")
         DSP("Docker Socket Proxy")
         OWUI("Open WebUI")
   end
@@ -55,6 +64,7 @@ flowchart TD
         DB_AI("Bases de Données & IA")
         MEDIA_STACK("Stack Média (*Arrs)")
         MONITORING("Stack Monitoring")
+        REDIS("Redis (Cache)")
         OPS("Services de Gestion (Hybrides)")
   end
  subgraph HOST["Serveur : Hôte Docker"]
@@ -114,13 +124,13 @@ flowchart TD
 
 #### 🟢 DMZ (Zone Exposée)
 
-**Services** : Plex, Overseerr, Nextcloud, Grafana, Vaultwarden, Open WebUI  
+**Services** : Plex, Overseerr, Nextcloud, Grafana, Vaultwarden, Open WebUI, Dashboard, Authelia, Kopia, MediaWiki, Uptime Kuma, Dozzle, Glances, IT-Tools, TTYD  
 **Accès** : Internet → Reverse Proxy → DMZ  
 **Restriction** : Pas d'accès direct aux services backend
 
 #### 🟡 Internal Net (Backend)
 
-**Services** : Bases de données, *Arrs, Qbittorrent, Prometheus, Ollama  
+**Services** : Bases de données, *Arrs, Qbittorrent, Prometheus, Ollama, Redis  
 **Accès** : Uniquement depuis DMZ ou Host  
 **Restriction** : Aucun accès depuis Internet
 

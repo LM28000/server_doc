@@ -39,13 +39,19 @@ mindmap
         (Mises à jour)
       Nextcloud
         (Cloud & Backup)
-      Portainer
-        (Gestion Docker)
+      Redis
+        (Cache)
     Monitoring
       Grafana
         (Dashboards)
       Prometheus
         (Métriques)
+      Uptime Kuma
+        (Uptime)
+      Glances
+        (Système)
+      Dozzle
+        (Logs)
       Scrutiny
         (Santé Disques)
       Tautulli
@@ -55,6 +61,22 @@ mindmap
         (Moteur)
       Open WebUI
         (Interface)
+    Sécurité
+      Authelia
+        (SSO/2FA)
+      Kopia
+        (Sauvegardes)
+      Vaultwarden
+        (Mots de passe)
+    Outils
+      Dashboard
+        (Accueil)
+      IT-Tools
+        (Boîte à outils)
+      MediaWiki
+        (Wiki)
+      TTYD
+        (Terminal Web)
 ```
 
 ### Organisation
@@ -76,12 +98,14 @@ L'écosystème est centré autour de 5 piliers majeurs :
 |-----------|-------------------|--------------------|
 | **Média** | 8 | Plex, Radarr, Sonarr |
 | **Téléchargement** | 2 | Qbittorrent |
-| **Système** | 4 | Nextcloud, Watchtower |
-| **Monitoring** | 5 | Prometheus, Grafana |
-| **IA** | 2 | Ollama |
-| **Cloud & Productivité** | 4 | Nextcloud, Vaultwarden |
+| **Système** | 4 | Nextcloud, Redis, Watchtower |
+| **Monitoring** | 8 | Prometheus, Grafana, Uptime Kuma |
+| **IA** | 2 | Ollama, Open WebUI |
+| **Sécurité** | 3 | Authelia, Kopia, Vaultwarden |
+| **Cloud & Productivité** | 5 | Nextcloud, Roundcube, Actual Budget, MediaWiki |
+| **Outils** | 5 | Dashboard, IT-Tools, Dozzle, Glances, TTYD |
 
-**Total** : 25+ conteneurs actifs
+**Total** : 37+ conteneurs actifs
 
 ### Ressources Consommées
 

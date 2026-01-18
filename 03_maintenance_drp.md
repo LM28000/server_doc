@@ -15,7 +15,18 @@
 
 La stratégie de sauvegarde suit le principe 3-2-1 : 3 copies, 2 supports différents, 1 hors site. Elle cible en priorité les **Volumes Nommés Docker** qui contiennent les configurations et bases de données.
 
-### 🔴 Priorité CRITIQUE (Sauvegarde quotidienne)
+### � Outil de Sauvegarde : Kopia
+
+**Kopia** est déployé pour gérer toutes les sauvegardes :
+- **Interface Web** : Port 8200
+- **Type** : Sauvegardes incrémentales avec déduplication
+- **Chiffrement** : AES-256
+- **Destinations** : Cloud (Backblaze B2, Wasabi, S3) ou NAS local
+- **Accès** : `/docker` monté en lecture seule
+
+> 💾 **Avantage** : Déduplication au niveau des blocs = économies d'espace massives (~70% pour les sauvegardes multiples).
+
+### �🔴 Priorité CRITIQUE (Sauvegarde quotidienne)
 
 Perte de données = Impact majeur sur le service.
 
@@ -31,6 +42,10 @@ Gain de temps significatif à la restauration.
 * `plex_config` - Bibliothèque, métadonnées, vues
 * `grafana_data` - Dashboards personnalisés
 * `open_webui_data` - Historique des conversations IA
+* `authelia_config` - Configuration SSO et utilisateurs
+* `uptime_kuma_data` - Configuration monitoring uptime
+* `mediawiki_data` - Contenu du wiki
+* `mediawiki_db` - Base de données MediaWiki
 
 ### 🟢 Priorité MOYENNE (Sauvegarde mensuelle)
 
@@ -106,7 +121,9 @@ docker logs watchtower -f
 - [ ] Vérifier les logs Watchtower
 - [ ] Contrôler l'espace disque disponible
 - [ ] Vérifier Grafana pour anomalies
-- [ ] Tester les sauvegardes (restauration d'un volume test)
+- [ ] Vérifier Uptime Kuma (disponibilité des services)
+- [ ] Tester les sauvegardes Kopia (restauration d'un volume test)
+- [ ] Consulter Dozzle pour erreurs dans les logs
 
 ### Tâches Mensuelles
 
@@ -124,7 +141,32 @@ docker logs watchtower -f
 
 ## 🔒 Sécurité Réseau
 
-### 🔐 VPN (Qbittorrent)
+### � Authentification Centralisée (Authelia)
+
+**Authelia** fournit une couche d'authentification SSO (Single Sign-On) pour tous les services exposés.
+
+* **Image** : `authelia/authelia:latest`
+* **Port** : 9091
+* **Fonctionnalités** :
+  - Authentification à deux facteurs (2FA/TOTP)
+  - Support LDAP/fichiers utilisateurs
+  - Règles d'accès granulaires
+  - Intégration avec reverse proxy (Nginx/Traefik)
+
+**Configuration** :
+```yaml
+# Fichier de configuration : /config/configuration.yml
+default_redirection_url: https://home.example.com
+
+access_control:
+  rules:
+    - domain: "*.example.com"
+      policy: two_factor
+```
+
+> 🔐 **Best Practice** : Tous les services sensibles (Grafana, Portainer, etc.) doivent passer par Authelia.
+
+### �🔐 VPN (Qbittorrent)
 
 Le conteneur `qbittorrent` agit comme une passerelle sécurisée pour tout le trafic P2P.
 

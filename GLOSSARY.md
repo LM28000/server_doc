@@ -43,10 +43,14 @@ Ce document définit les termes techniques, acronymes et concepts utilisés dans
 | Terme | Définition | Documentation |
 |-------|------------|---------------|
 | **cAdvisor** | Container Advisor - Métriques conteneurs Docker | [02_applications.md](./02_applications.md) |
+| **Dozzle** | Visualisateur de logs Docker en temps réel | [02_applications.md](./02_applications.md) |
+| **Glances** | Monitoring système temps réel (alternative htop) | [02_applications.md](./02_applications.md) |
 | **Node Exporter** | Collecteur de métriques système Linux | [02_applications.md](./02_applications.md) |
 | **Prometheus** | Base de données time-series pour métriques | [02_applications.md](./02_applications.md) |
 | **Scrape** | Collecte active de métriques par Prometheus | [workflow.md](./workflow.md) |
 | **S.M.A.R.T.** | Self-Monitoring Analysis and Reporting Technology | [02_applications.md](./02_applications.md) |
+| **Tautulli** | Statistiques et analytics pour Plex | [02_applications.md](./02_applications.md) |
+| **Uptime Kuma** | Monitoring de disponibilité des services | [02_applications.md](./02_applications.md) |
 
 ### IA & LLM
 
@@ -56,6 +60,26 @@ Ce document définit les termes techniques, acronymes et concepts utilisés dans
 | **Ollama** | Moteur d'inférence local pour LLM | [02_applications.md](./02_applications.md) |
 | **Open WebUI** | Interface chat pour modèles Ollama | [02_applications.md](./02_applications.md) |
 | **Inférence** | Génération de réponses par le modèle IA | [workflow.md](./workflow.md) |
+
+### Sécurité & Sauvegarde
+
+| Terme | Définition | Documentation |
+|-------|------------|---------------|
+| **Authelia** | Solution SSO open-source avec 2FA | [02_applications.md](./02_applications.md) |
+| **Kopia** | Sauvegardes incrémentales avec déduplication | [02_applications.md](./02_applications.md) |
+| **Redis** | Cache en mémoire pour performances Nextcloud | [02_applications.md](./02_applications.md) |
+| **SSO** | Single Sign-On - Authentification unifiée | [03_maintenance_drp.md](./03_maintenance_drp.md) |
+| **2FA/TOTP** | Two-Factor Authentication / Time-based OTP | [03_maintenance_drp.md](./03_maintenance_drp.md) |
+
+### Outils & Utilitaires
+
+| Terme | Définition | Documentation |
+|-------|------------|---------------|
+| **Dashboard** | Page d'accueil homelab centralisée | [02_applications.md](./02_applications.md) |
+| **IT-Tools** | Collection d'outils IT pour développeurs | [02_applications.md](./02_applications.md) |
+| **MediaWiki** | Logiciel wiki (même que Wikipédia) | [02_applications.md](./02_applications.md) |
+| **Qui** | Interface web pour autobrr | [02_applications.md](./02_applications.md) |
+| **TTYD** | Terminal SSH accessible via navigateur | [02_applications.md](./02_applications.md) |
 
 ---
 
@@ -114,11 +138,22 @@ Voir [03_maintenance_drp.md](./03_maintenance_drp.md)
 | **Overseerr** | 5000 | HTTP | DMZ → Internet |
 | **Nextcloud** | 8081 | HTTP | DMZ → Internet |
 | **Grafana** | 3000 | HTTP | DMZ → Internet |
+| **Authelia** | 9091 | HTTP | DMZ → Internet |
+| **Kopia** | 8200 | HTTP | DMZ → Internet |
+| **MediaWiki** | 8083 | HTTP | DMZ → Internet |
+| **Dashboard** | 8089 | HTTP | DMZ → Internet |
+| **IT-Tools** | 8090 | HTTP | DMZ → Internet |
+| **Dozzle** | 8088 | HTTP | DMZ → Internet |
+| **Glances** | 61208 | HTTP | DMZ → Internet |
+| **Uptime Kuma** | 3002 | HTTP | DMZ → Internet |
+| **TTYD** | 7681 | HTTP | DMZ → Internet |
+| **Qui** | 7476 | HTTP | DMZ → Internet |
 | **Prometheus** | 9090 | HTTP | Internal uniquement |
 | **Radarr** | 7878 | HTTP | Internal uniquement |
 | **Sonarr** | 8989 | HTTP | Internal uniquement |
 | **Qbittorrent** | 8080 | HTTP | Internal uniquement |
 | **Ollama** | 11434 | HTTP | Internal uniquement |
+| **Redis** | 6379 | TCP | Internal uniquement |
 | **SSH** | 22 | SSH | LAN uniquement |
 | **iRMC** | 443 | HTTPS | LAN uniquement |
 
@@ -212,4 +247,4 @@ Voir [03_maintenance_drp.md](./03_maintenance_drp.md)
 
 ---
 
-*Dernière mise à jour : 18/01/2025*
+*Dernière mise à jour : 18/01/2026*

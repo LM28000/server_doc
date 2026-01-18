@@ -307,4 +307,4 @@ Pour toute question ou suggestion d'amélioration de la documentation :
 
 ---
 
-*Dernière mise à jour : 18/01/2025*
+*Dernière mise à jour : 18/01/2026*

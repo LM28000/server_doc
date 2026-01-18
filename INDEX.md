@@ -85,6 +85,12 @@ Navigation rapide vers tous les documents du serveur Antigravity.
   - Chemins système
   - Index thématique
 
+- **[SERVICES.md](./SERVICES.md)** - Liste complète des services 📋
+  - 37 conteneurs détaillés par catégorie
+  - Statistiques et répartition réseau
+  - Volumes à sauvegarder
+  - Tableau récapitulatif complet
+
 ### 📝 Méta-Documentation
 - **[CONTRIBUTING.md](./CONTRIBUTING.md)** - Guide de contribution
   - Principes directeurs
@@ -103,10 +109,10 @@ Navigation rapide vers tous les documents du serveur Antigravity.
 
 ### stacks/
 Contient les fichiers de configuration Docker Compose :
-- `authelia.yaml` - Authentification unifiée
-- `kopia.yaml` - Sauvegardes
-- `mediawiki.yaml` - Wiki
-- `securedmz.yaml` - Services DMZ
+- `authelia.yaml` - Authentification unifiée (SSO)
+- `kopia.yaml` - Sauvegardes incrémentales
+- `mediawiki.yaml` - Wiki personnel
+- `securedmz.yaml` - Stack principale (37+ services)
 
 ---
 
@@ -147,11 +153,11 @@ Contient les fichiers de configuration Docker Compose :
 ### Nombre de Fichiers
 - **3** Documents principaux (Infrastructure, Applications, Maintenance)
 - **8** Diagrammes (Workflows, Architecture, Expérience)
-- **3** Documents de référence (Glossaire, Contribution, Changelog)
+- **4** Documents de référence (Glossaire, Services, Contribution, Changelog)
 - **1** Index (ce fichier)
 - **4** Fichiers de configuration (stacks/)
 
-**Total** : 19 fichiers markdown
+**Total** : 20 fichiers markdown
 
 ### Contenu Estimé
 - **~15,000 mots** de documentation
@@ -196,4 +202,4 @@ Contient les fichiers de configuration Docker Compose :
 
 ---
 
-*Ce fichier est généré automatiquement. Dernière mise à jour : 18/01/2025*
+*Ce fichier est généré automatiquement. Dernière mise à jour : 18/01/2026*

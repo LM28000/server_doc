@@ -59,6 +59,8 @@ flowchart TB
         NCC("Nextcloud Cron")
         SC("Scrutiny (S.M.A.R.T. Health)")
         TT("Tautulli (Analyse Plex)")
+        UK("fa:fa-heart-pulse Uptime Kuma (Uptime)")
+        KP("fa:fa-database Kopia (Sauvegardes)")
         NC("fa:fa-cloud Nextcloud")
         PL("fa:fa-film Plex")
   end
@@ -66,8 +68,14 @@ flowchart TB
         PROM("Prometheus (Collecteur)")
         CADV("cAdvisor (Métriques Conteneurs)")
         NE("Node Exporter (Métriques Hôte)")
+        GL("Glances (Système)")
+        DZ("Dozzle (Logs)")
         GF("fa:fa-chart-bar Grafana (Visualisation)")
         DSP("Docker Socket Proxy (Accès Sécurisé)")
+  end
+ subgraph WORKFLOW_SECURITY["Flux de Travail Sécurité"]
+        AUTH("fa:fa-shield-halved Authelia (SSO/2FA)")
+        USERS("fa:fa-users Utilisateurs")
   end
     OS -- Commande Nouvelle Tâche --> RD & SN
     PR -- Requête Index --> FS
@@ -84,15 +92,21 @@ flowchart TB
     NC -- Déclenche Tâches Régulières --> NCC
     PL -- Alimente Données --> TT
     SC -- Collecte État --> TT
+    UK -- Surveille --> WORKFLOW_AUTOMATION & WORKFLOW_MAINTENANCE & WORKFLOW_OBSERVABILITY
+    KP -- Sauvegarde --> NC & WORKFLOW_AUTOMATION
     DSP -- Expose Métriques --> CADV
-    PROM -- Scrape (Collecte Active) --> CADV & NE & SC
+    PROM -- Scrape (Collecte Active) --> CADV & NE & SC & GL
     GF -- Requête Visualisation --> PROM
+    DZ -- Affiche Logs --> WORKFLOW_AUTOMATION & WORKFLOW_MAINTENANCE
+    USERS -- Authentification --> AUTH
+    AUTH -- Autorise Accès --> WORKFLOW_AUTOMATION & WORKFLOW_MAINTENANCE & WORKFLOW_OBSERVABILITY
     style TD_NE fill:#fff7ed,stroke:#f97316,stroke-dasharray: 5 5
     style WORKFLOW_AUTOMATION fill:#e3f2fd,stroke:#64b5f6,stroke-width:1px,color:#263238
     style WORKFLOW_MAINTENANCE fill:#fff3e0,stroke:#ffb74d,stroke-width:2px,color:#263238
     style WORKFLOW_OBSERVABILITY fill:#e8f5e9,stroke:#81c784,stroke-width:2px,color:#263238
     style WORKFLOW_AI fill:#f3e5f5,stroke:#ce93d8,stroke-width:1px,color:#263238
     style WORKFLOW_CONTENT fill:#fce4ec,stroke:#f48fb1,stroke-width:1px,color:#263238
+    style WORKFLOW_SECURITY fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#263238
 ```
 
 ---

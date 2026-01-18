@@ -6,6 +6,72 @@ Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 
 ---
 
+## [2.1.0] - 18/01/2026
+
+### ✨ Ajouté
+
+#### Nouveaux Services Documentés
+
+**Sécurité & Authentification** :
+- **Authelia** - Solution SSO (Single Sign-On) avec support 2FA/TOTP
+- **Kopia** - Sauvegardes incrémentales avec déduplication et chiffrement
+
+**Monitoring & Observabilité** :
+- **Uptime Kuma** - Monitoring de disponibilité des services avec notifications
+- **Dozzle** - Visualisateur de logs Docker en temps réel
+- **Glances** - Monitoring système temps réel (alternative htop)
+
+**Outils & Productivité** :
+- **Dashboard** - Page d'accueil centralisée du homelab
+- **IT-Tools** - Collection de 80+ outils pour développeurs
+- **MediaWiki** - Wiki personnel avec base MariaDB
+- **TTYD** - Terminal SSH accessible via navigateur
+- **Qui** - Interface web pour autobrr
+
+**Infrastructure** :
+- **Redis** - Cache en mémoire pour Nextcloud (amélioration performances)
+
+#### Contenu Enrichi
+- 🔐 Nouvelle section "Sécurité & Authentification" dans [02_applications.md](./02_applications.md)
+- 🛠️ Nouvelle section "Outils & Utilitaires" dans [02_applications.md](./02_applications.md)
+- 📊 Mise à jour des statistiques : 37+ conteneurs actifs (vs 25+)
+- 🔑 Documentation complète Authelia avec exemples de configuration
+- 💾 Documentation Kopia avec stratégie de sauvegarde
+- 🔗 Mise à jour du tableau des ports (14 nouveaux ports)
+
+### 📝 Amélioré
+
+#### Fichiers Mis à Jour
+
+**[02_applications.md](./02_applications.md)** :
+- Ajout de Redis dans la section Cloud
+- Nouvelle section complète pour Sécurité & Authentification
+- Nouvelle section complète pour Outils & Utilitaires
+- Tableau monitoring enrichi (8 services vs 5)
+
+**[03_maintenance_drp.md](./03_maintenance_drp.md)** :
+- Documentation Kopia comme outil principal de sauvegarde
+- Ajout volumes à sauvegarder (authelia, uptime_kuma, mediawiki)
+- Nouvelle section Authelia dans Sécurité Réseau
+- Tâches hebdomadaires enrichies (Uptime Kuma, Dozzle)
+
+**[GLOSSARY.md](./GLOSSARY.md)** :
+- Nouvelle section "Outils & Utilitaires" (5 nouveaux termes)
+- Section "Sécurité & Sauvegarde" enrichie
+- Section "Monitoring" mise à jour (9 services)
+- Tableau des ports étendu (22 services documentés)
+
+**[INDEX.md](./INDEX.md)** :
+- Statistiques mises à jour (37+ conteneurs, 8 catégories)
+- Description des fichiers stacks/ actualisée
+
+### 🔧 Corrigé
+- Dates mises à jour de 2025 → 2026
+- Cohérence des descriptions de services
+- Liens de navigation vérifiés
+
+---
+
 ## [2.0.0] - 18/01/2025
 
 ### ✨ Ajouté
