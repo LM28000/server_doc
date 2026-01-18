@@ -1,5 +1,15 @@
 # 🖥️ 01 - Infrastructure Physique & Système
 
+[← Retour au sommaire](./README.md) | [Applications →](./02_applications.md)
+
+## 📑 Table des Matières
+
+- [Matériel (Hardware)](#-matériel-hardware)
+- [Système d'Exploitation](#️-système-dexploitation-hôte)
+- [Réseau & Connectivité](#-réseau--connectivité)
+
+---
+
 ## 📦 Matériel (Hardware)
 
 | Catégorie | Détails | Notes |
@@ -14,10 +24,12 @@
 
 | Rôle | Type | Description |
 | :--- | :--- | :--- |
-| **Système (OS/DB)** | M.2 SSD | Stockage rapide pour l'OS, configurations et bases de données. |
-| **Cache** | SATA SSD | Cache d'écriture et téléchargement temporaire. |
-| **Stockage de Masse** | 8x HDD | Pool de données principales. |
-| **Architecture** | **MergerFS** + **SnapRAID** | MergerFS unifie les disques, SnapRAID assure la parité. |
+| **Système (OS/DB)** | M.2 NVMe SSD | Stockage rapide pour l'OS, configurations Docker et bases de données (Hot Storage). |
+| **Cache** | SATA SSD | Cache d'écriture et zone de téléchargement temporaire (Warm Storage). |
+| **Stockage de Masse** | 8x HDD SATA | Pool de données principales pour les médias (Cold Storage). |
+| **Architecture** | **MergerFS** + **SnapRAID** | MergerFS unifie les disques en un volume logique, SnapRAID assure la parité (1-2 disques). |
+
+> 💡 **Note** : Cette architecture de stockage hiérarchisé (tiering) optimise les performances tout en maintenant un coût par To raisonnable. Voir le [diagramme de flux de données](./dataflow.md) pour plus de détails.
 
 ---
 
@@ -42,15 +54,18 @@
 | **DNS** | `8.8.8.8` | - |  |
 
 ### Interfaces Virtuelles & Docker (Bridges)
-Le serveur utilise de nombreux sous-réseaux internes pour l'isolation des conteneurs.
+
+Le serveur utilise de nombreux sous-réseaux internes pour l'isolation des conteneurs, conférant une sécurité accrue.
 
 | Interface Pont | Sous-réseau (Interne) | Correspondance Probable |
 | :--- | :--- | :--- |
-| **docker0** | `172.17.0.1/16` | Bridge Docker par défaut |
-| **br-265b6517ea68**| `172.18.0.1/16` | `internal_net` |
-| **br-de45d84601ec**| `172.19.0.1/16` | `dmz_net` |
+| **docker0** | `172.17.0.1/16` | Bridge Docker par défaut (non utilisé) |
+| **br-265b6517ea68**| `172.18.0.1/16` | Réseau `internal_net` (Backend) |
+| **br-de45d84601ec**| `172.19.0.1/16` | Réseau `dmz_net` (Services exposés) |
 | **br-00f608581f6e**| `172.21.0.1/16` | Réseau Custom |
 | **br-264f5b3fd647**| `172.23.0.1/16` | Réseau Custom |
+
+> 🔐 **Sécurité** : La segmentation réseau isole les services critiques des services exposés. Consultez le [diagramme de flux réseau](./networkflow.md) pour comprendre l'architecture complète.
 
 ### Topologie Simplifiée
 ```mermaid

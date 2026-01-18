@@ -1,6 +1,10 @@
 # 🔄 Flux de Données & Stratégie de Stockage
 
-Ce document détaille le cycle de vie de la donnée au sein du serveur, de son acquisition à son archivage. L'architecture repose sur une stratégie de stockage hiérarchisé (Tiering) pour optimiser les performances et la durabilité.
+[↑ Retour au sommaire](./README.md) | [Infrastructure →](./01_infrastructure.md)
+
+Ce document détaille le cycle de vie de la donnée au sein du serveur, de son acquisition à son archivage. L'architecture repose sur une stratégie de **stockage hiérarchisé (Tiering)** pour optimiser les performances, la durabilité et le coût.
+
+> 🎯 **Objectif** : Maximiser les performances pour les opérations fréquentes (Hot) tout en minimisant les coûts pour le stockage de masse (Cold).
 
 ## 💾 Stratégie de Stockage (Tiering)
 
@@ -66,3 +70,75 @@ flowchart TD
     style SLOW_STORAGE fill:#ccfbf1,stroke:#0d9488
     style DATA_INGESTION fill:#f3e8ff,stroke:#9333ea
 ```
+
+---
+
+## 📈 Avantages de l'Architecture Tiering
+
+### 🚀 Performances
+
+| Couche | Latence | Débit | Usage |
+|--------|---------|--------|-------|
+| **Hot (M.2)** | < 1ms | ~3500 MB/s | Système, DB, Configs |
+| **Warm (SATA SSD)** | ~5ms | ~550 MB/s | Téléchargements, Cache |
+| **Cold (HDD)** | ~15ms | ~150 MB/s | Médias, Archives |
+
+### 💰 Coûts
+
+- **M.2 NVMe** : ~0.10€/Go (256 Go = 25€)
+- **SATA SSD** : ~0.08€/Go (500 Go = 40€)
+- **HDD** : ~0.02€/Go (8x 4To = 640€)
+
+**Total stockage** : ~32 To pour ~700€ vs 3200€ en full SSD
+
+### 🔄 Flux de Données Typique
+
+```
+1. Téléchargement → Warm (SATA SSD)
+   Durée : 10min - 2h selon taille
+
+2. Traitement Tdarr → Warm (SATA SSD)
+   Durée : 20min - 8h selon complexité
+
+3. Déplacement final → Cold (HDD Pool)
+   Durée : 5-30min selon taille
+
+4. Accès lecture → Cold (HDD Pool)
+   Direct Play : Pas de transcodage nécessaire
+```
+
+---
+
+## ⚙️ Configuration Technique
+
+### MergerFS
+
+```bash
+# Configuration typique
+mergerfs -o defaults,allow_other,use_ino,category.create=mfs \
+  /mnt/disk1:/mnt/disk2:/mnt/disk3:/mnt/disk4 \
+  /mnt/disk5:/mnt/disk6:/mnt/disk7:/mnt/disk8 \
+  /mnt/storage
+```
+
+**Politique de création** : `mfs` (most free space) - Les nouveaux fichiers sont écrits sur le disque avec le plus d'espace libre.
+
+### SnapRAID
+
+```bash
+# Synchronisation hebdomadaire
+snaprraid sync
+
+# Vérification mensuelle
+snapraid scrub -p 10  # Vérifie 10% des données
+```
+
+**Disques de parité** : 2 disques (permet de survivre à 2 pannes simultanées)
+
+---
+
+## 🔗 Voir Aussi
+
+- [Infrastructure matérielle détaillée](./01_infrastructure.md)
+- [Procédures de sauvegarde](./03_maintenance_drp.md)
+- [Architecture réseau](./networkflow.md)

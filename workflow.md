@@ -1,6 +1,10 @@
 # 🔄 Flux de Travail
 
-Ce document offre une vue d'ensemble de l'automatisation du serveur. Il connecte les différents services pour former un écosystème cohérent et autonome.
+[↑ Retour au sommaire](./README.md)
+
+Ce document offre une vue d'ensemble de l'automatisation globale du serveur. Il connecte les différents services pour former un écosystème cohérent et autonome, orchestrant les flux de données et les processus.
+
+> 💡 **Conseil** : Ce diagramme est idéal pour comprendre comment les services interagissent entre eux. Pour des détails spécifiques, consultez les diagrammes dédiés.
 
 ## ⚙️ Orchestration des Flux
 
@@ -90,3 +94,61 @@ flowchart TB
     style WORKFLOW_AI fill:#f3e5f5,stroke:#ce93d8,stroke-width:1px,color:#263238
     style WORKFLOW_CONTENT fill:#fce4ec,stroke:#f48fb1,stroke-width:1px,color:#263238
 ```
+
+---
+
+## 📝 Détails des Flux
+
+### 🎬 Flux Média (Automation)
+
+**Déclencheur** : Requête utilisateur via Overseerr  
+**Durée moyenne** : 30 min - 4h  
+**Services impliqués** : Overseerr → Radarr/Sonarr → Prowlarr → Qbittorrent → Tdarr → Plex
+
+**Étapes clés** :
+1. L'utilisateur cherche un contenu sur Overseerr
+2. Overseerr notifie Radarr/Sonarr de la demande
+3. Prowlarr recherche sur les indexeurs (via FlareSolverr si nécessaire)
+4. Radarr/Sonarr sélectionne la meilleure release et envoie à Qbittorrent
+5. Une fois téléchargé, le fichier est déplacé et traité par Tdarr
+6. Le média optimisé est indexé par Plex
+7. Bazarr télécharge les sous-titres automatiquement
+
+### 🧠 Flux IA
+
+**Déclencheur** : Requête utilisateur via Open WebUI  
+**Latence** : < 2s (selon le modèle)  
+**Services impliqués** : Open WebUI → Ollama
+
+**Modèles disponibles** : Llama 3, Mistral, CodeLlama, etc.
+
+### 🔧 Flux Maintenance
+
+**Fréquence** : Continue (Watchtower : toutes les 6h)  
+**Supervision** : Prometheus + Grafana  
+**Services impliqués** : Watchtower, Scrutiny, Tautulli, Nextcloud Cron
+
+### 📊 Flux Monitoring
+
+**Architecture** : Pull-based (Prometheus scrape)  
+**Rétention** : 15 jours  
+**Services impliqués** : Prometheus ← cAdvisor / Node Exporter / Scrutiny  
+**Visualisation** : Grafana avec dashboards pré-configurés
+
+---
+
+## 🔗 Voir Aussi
+
+- **Architecture détaillée** :
+  - [Séquence de requête média](./media_request_sequence.md)
+  - [Cycle de vie du média](./media_lifecycle_state.md)
+  - [Pipeline Tdarr](./tdarrflow.md)
+
+- **Infrastructure** :
+  - [Flux réseau](./networkflow.md)
+  - [Flux de données](./dataflow.md)
+  - [Matériel](./01_infrastructure.md)
+
+- **Gestion** :
+  - [Applications](./02_applications.md)
+  - [Maintenance](./03_maintenance_drp.md)

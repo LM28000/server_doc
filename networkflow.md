@@ -1,6 +1,10 @@
 # 🌐 Flux de Réseau
 
-Ce document illustre la segmentation réseau du serveur, conçue pour isoler les services exposés des services critiques internes.
+[↑ Retour au sommaire](./README.md) | [Infrastructure →](./01_infrastructure.md)
+
+Ce document illustre la **segmentation réseau** du serveur, conçue pour isoler les services exposés des services critiques internes selon le principe de **défense en profondeur** (Defense in Depth).
+
+> 🛡️ **Sécurité** : En cas de compromission d'un service exposé (DMZ), l'accès aux services backend critiques reste protégé par l'isolation réseau.
 
 ## 🛡️ Segmentation Réseau
 
@@ -91,3 +95,86 @@ flowchart TD
     style MONITORING fill:transparent,stroke:transparent
     style OPS fill:transparent,stroke:transparent
 ```
+
+---
+
+## 🔐 Règles de Sécurité Réseau
+
+### Flux Autorisés
+
+| Source | Destination | Ports | Protocole | Usage |
+|--------|-------------|-------|-----------|-------|
+| **Internet** | DMZ | 80, 443 | HTTPS | Accès web via reverse proxy |
+| **DMZ** | Internal Net | Variés | TCP | API backends, DB |
+| **Internal Net** | DMZ | - | - | **❌ Bloqué** (unidirectionnel) |
+| **LAN Local** | iRMC | 443 | HTTPS | Gestion hors-bande |
+| **LAN Local** | Host SSH | 22 | SSH | Administration |
+
+### Isolation par Zone
+
+#### 🟢 DMZ (Zone Exposée)
+
+**Services** : Plex, Overseerr, Nextcloud, Grafana, Vaultwarden, Open WebUI  
+**Accès** : Internet → Reverse Proxy → DMZ  
+**Restriction** : Pas d'accès direct aux services backend
+
+#### 🟡 Internal Net (Backend)
+
+**Services** : Bases de données, *Arrs, Qbittorrent, Prometheus, Ollama  
+**Accès** : Uniquement depuis DMZ ou Host  
+**Restriction** : Aucun accès depuis Internet
+
+#### 🟠 Host Network
+
+**Services** : Docker Engine, SSH, iRMC  
+**Accès** : LAN local uniquement  
+**Restriction** : Pas d'exposition Internet directe
+
+---
+
+## 🔒 Best Practices Appliquées
+
+### 1️⃣ Principe du Moindre Privilège
+
+Chaque service n'a accès qu'aux ressources strictement nécessaires.
+
+### 2️⃣ Défense en Profondeur
+
+Plusieurs couches de sécurité :
+- Firewall externe (Box/Routeur)
+- Reverse Proxy (Nginx avec TLS)
+- Segmentation réseau Docker
+- VPN pour le trafic P2P
+- Socket Proxy pour Docker API
+
+### 3️⃣ Monitoring Continu
+
+Grafana surveille les connexions anormales et les pics de trafic.
+
+---
+
+## 🔧 Configuration Docker Networks
+
+```yaml
+networks:
+  dmz_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16
+  
+  internal_net:
+    driver: bridge
+    internal: true  # Pas d'accès Internet direct
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
+```
+
+---
+
+## 🔗 Voir Aussi
+
+- [Infrastructure matérielle](./01_infrastructure.md) - Détails interfaces réseau
+- [Sécurité & DRP](./03_maintenance_drp.md) - VPN, Socket Proxy
+- [Applications](./02_applications.md) - Attribution des réseaux par service

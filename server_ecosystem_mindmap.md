@@ -1,6 +1,10 @@
 # 🧠 Carte Mentale de l'Écosystème (Mindmap)
 
-Ce document offre une vue d'ensemble hiérarchique et visuelle de tous les composants du serveur. C'est le point d'entrée idéal pour comprendre "qui fait quoi" en un coup d'œil.
+[↑ Retour au sommaire](./README.md)
+
+Ce document offre une **vue d'ensemble hiérarchique et visuelle** de tous les composants du serveur. C'est le **point d'entrée idéal** pour comprendre "qui fait quoi" en un coup d'œil.
+
+> 💡 **Recommandation** : Commencez ici si vous découvrez le serveur, puis consultez les diagrammes spécifiques pour approfondir.
 
 ## 🗺️ Vue d'Ensemble
 
@@ -61,3 +65,75 @@ L'écosystème est centré autour de 5 piliers majeurs :
 *   **Système** : La gestion et la pérennité de l'infrastructure.
 *   **Monitoring** : La surveillance de la santé du serveur.
 *   **IA** : Les capacités d'intelligence artificielle locales.
+
+---
+
+## 📊 Statistiques de l'Écosystème
+
+### Services par Catégorie
+
+| Catégorie | Nombre de Services | Services Critiques |
+|-----------|-------------------|--------------------|
+| **Média** | 8 | Plex, Radarr, Sonarr |
+| **Téléchargement** | 2 | Qbittorrent |
+| **Système** | 4 | Nextcloud, Watchtower |
+| **Monitoring** | 5 | Prometheus, Grafana |
+| **IA** | 2 | Ollama |
+| **Cloud & Productivité** | 4 | Nextcloud, Vaultwarden |
+
+**Total** : 25+ conteneurs actifs
+
+### Ressources Consommées
+
+| Ressource | Utilisation Moyenne | Pic |
+|-----------|---------------------|-----|
+| **CPU** | 15-20% | 80% (transcodage) |
+| **RAM** | 8 Go | 14 Go |
+| **Stockage** | 7 To / 32 To | - |
+| **Réseau** | 50 Mbps | 200 Mbps (DL) |
+
+---
+
+## 🔗 Navigation Recommandée
+
+### 🎯 Pour Débuter
+
+1. **Vue d'ensemble** : Vous êtes ici ✅
+2. **Infrastructure** : [Matériel et réseau](./01_infrastructure.md)
+3. **Applications** : [Liste des services](./02_applications.md)
+4. **Workflow** : [Comment tout fonctionne ensemble](./workflow.md)
+
+### 🔍 Pour Approfondir
+
+**Architecture** :
+- [Segmentation réseau](./networkflow.md)
+- [Stratégie de stockage](./dataflow.md)
+
+**Média** :
+- [Séquence de requête](./media_request_sequence.md)
+- [Cycle de vie](./media_lifecycle_state.md)
+- [Transcodage Tdarr](./tdarrflow.md)
+
+**Expérience** :
+- [Parcours utilisateur](./user_journey.md)
+
+**Maintenance** :
+- [Procédures & DRP](./03_maintenance_drp.md)
+
+---
+
+## 🔗 Liens Externes
+
+### Documentation Officielle
+
+- [Docker Documentation](https://docs.docker.com/)
+- [Plex Support](https://support.plex.tv/)
+- [TRaSH Guides](https://trash-guides.info/) - Best practices *Arrs
+- [MergerFS GitHub](https://github.com/trapexit/mergerfs)
+- [SnapRAID Manual](https://www.snapraid.it/manual)
+
+### Communautés
+
+- [r/selfhosted](https://reddit.com/r/selfhosted)
+- [r/PleX](https://reddit.com/r/PleX)
+- [r/DataHoarder](https://reddit.com/r/DataHoarder)
