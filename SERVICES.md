@@ -2,8 +2,8 @@
 
 Liste exhaustive de tous les conteneurs Docker déployés sur le serveur Antigravity.
 
-**Dernière mise à jour** : 18/01/2026  
-**Total de services** : 37 conteneurs actifs
+**Dernière mise à jour** : 30/01/2026  
+**Total de services** : 32 conteneurs actifs
 
 ---
 
@@ -119,13 +119,13 @@ Liste exhaustive de tous les conteneurs Docker déployés sur le serveur Antigra
 │ Monitoring           │    8     │    21.6%     │
 │ Cloud & Productivité │    6     │    16.2%     │
 │ Outils               │    5     │    13.5%     │
-│ Sécurité             │    3     │     8.1%     │
-│ Téléchargement       │    2     │     5.4%     │
-│ IA                   │    2     │     5.4%     │
-│ Wiki                 │    2     │     5.4%     │
-│ Infrastructure       │    1     │     2.7%     │
+│ Sécurité             │    5     │    15.6%     │
+│ Téléchargement       │    2     │     6.3%     │
+│ IA                   │    2     │     6.3%     │
+│ Wiki                 │    2     │     6.3%     │
+│ Infrastructure       │    1     │     3.1%     │
 ├──────────────────────┼──────────┼──────────────┤
-│ TOTAL                │   37     │   100.0%     │
+│ TOTAL                │   32     │   100.0%     │
 └──────────────────────┴──────────┴──────────────┘
 ```
 
@@ -158,26 +158,26 @@ Liste exhaustive de tous les conteneurs Docker déployés sur le serveur Antigra
 ## 💾 Volumes Critiques à Sauvegarder
 
 ### 🔴 Priorité CRITIQUE
-- `vaultwarden_data`
-- `nextcloud_db_data`
-- `actual_budget_data`
+- `/docker/services/vaultwarden/`
+- `/docker/services/nextcloud/db/`
+- `/docker/services/actual_budget/`
 
 ### 🟡 Priorité HAUTE
-- `nextcloud_data`
-- `plex_config`
-- `grafana_data`
-- `open_webui_data`
-- `authelia_config`
-- `uptime_kuma_data`
-- `mediawiki_data`
-- `mediawiki_db`
+- `/docker/services/nextcloud/app/`
+- `/docker/services/plex/config/`
+- `/docker/services/grafana/`
+- `/docker/services/open-webui/`
+- `/docker/services/authelia/`
+- `/docker/services/headscale/`
+- `/docker/services/uptime-kuma/`
+- `/docker/services/mediawiki/`
 
 ### 🟢 Priorité MOYENNE
-- `radarr_config`
-- `sonarr_config`
-- `prowlarr_config`
-- `bazarr_config`
-- `prometheus_data`
+- `/docker/services/radarr/`
+- `/docker/services/sonarr/`
+- `/docker/services/prowlarr/`
+- `/docker/services/bazarr/`
+- `/docker/services/prometheus/`
 
 ---
 

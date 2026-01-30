@@ -24,12 +24,14 @@
 
 | Rôle | Type | Description |
 | :--- | :--- | :--- |
-| **Système (OS/DB)** | M.2 NVMe SSD | Stockage rapide pour l'OS, configurations Docker et bases de données (Hot Storage). |
+| **Système (OS/DB)** | M.2 NVMe SSD | Stockage rapide pour l'OS, configurations Docker (`/docker/services/`) et bases de données (Hot Storage). |
 | **Cache** | SATA SSD | Cache d'écriture et zone de téléchargement temporaire (Warm Storage). |
 | **Stockage de Masse** | 8x HDD SATA | Pool de données principales pour les médias (Cold Storage). |
 | **Architecture** | **MergerFS** + **SnapRAID** | MergerFS unifie les disques en un volume logique, SnapRAID assure la parité (1-2 disques). |
 
 > 💡 **Note** : Cette architecture de stockage hiérarchisé (tiering) optimise les performances tout en maintenant un coût par To raisonnable. Voir le [diagramme de flux de données](./dataflow.md) pour plus de détails.
+
+**Stratégie de volumes Docker** : Les configurations utilisent des bind mounts vers `/docker/services/<nom_service>/` au lieu de volumes nommés, permettant un accès direct aux fichiers de configuration et facilitant les sauvegardes.
 
 ---
 

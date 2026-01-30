@@ -85,7 +85,7 @@ flowchart TD
     GH -- Synchronisation --> P
     ROUTEUR -- HTTP/S --> NGINX
     ROUTEUR -- IPMI (Hors Bande) --> IRMC
-    NGINX --> DMZ_NET
+    NGINX["Nginx Proxy Manager<br/>*.du-cray.eu"] --> DMZ_NET
     DE -- Exécute --> DMZ_NET & INTERNAL_NET
     DMZ_NET --> INTERNAL_NET
     OWUI -- API --> DB_AI

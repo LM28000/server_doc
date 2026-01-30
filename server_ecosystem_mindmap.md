@@ -107,7 +107,7 @@ L'écosystème est centré autour de 5 piliers majeurs :
 | **Cloud & Productivité** | 5 | Nextcloud, Roundcube, Actual Budget, MediaWiki |
 | **Outils** | 5 | Dashboard, IT-Tools, Dozzle, Glances, TTYD |
 
-**Total** : 39+ conteneurs actifs
+**Total** : 32 conteneurs actifs
 
 ### Ressources Consommées
 

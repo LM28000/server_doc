@@ -25,7 +25,7 @@ Services exposés principalement via le réseau `dmz_net` pour un accès sécuri
 | **Vaultwarden** | `vaultwarden/server`| `8084:80`, `3012` | `vaultwarden_data` | DMZ | Gestionnaire de mots de passe (critique ⚠️). |
 | **MediaWiki** | `mediawiki:1.39` | `8083:80` | `mediawiki_data`, `mediawiki_db` | Externe | Wiki personnel avec base MariaDB. |
 
-> 🔐 **Sécurité** : Tous ces services sont accessibles via un reverse proxy externe (Nginx) qui gère le TLS/SSL.
+> 🔐 **Sécurité** : Tous ces services sont accessibles via **Nginx Proxy Manager** (reverse proxy externe) qui gère le TLS/SSL pour `*.du-cray.eu` avec renouvellement automatique des certificats Let's Encrypt. Authelia fournit une couche d'authentification SSO supplémentaire.
 
 ---
 

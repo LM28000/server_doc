@@ -30,31 +30,31 @@ La stratégie de sauvegarde suit le principe 3-2-1 : 3 copies, 2 supports diffé
 
 Perte de données = Impact majeur sur le service.
 
-* `vaultwarden_data` - Base de mots de passe **⚠️ CRITIQUE**
-* `nextcloud_db_data` - Base MariaDB Nextcloud
-* `actual_budget_data` - Données financières
+* `/docker/services/vaultwarden/` - Base de mots de passe **⚠️ CRITIQUE**
+* `/docker/services/nextcloud/db/` - Base MariaDB Nextcloud
+* `/docker/services/actual_budget/` - Données financières
 
 ### 🟡 Priorité HAUTE (Sauvegarde hebdomadaire)
 
 Gain de temps significatif à la restauration.
 
-* `nextcloud_data` - Fichiers config Nextcloud
-* `plex_config` - Bibliothèque, métadonnées, vues
-* `grafana_data` - Dashboards personnalisés
-* `open_webui_data` - Historique des conversations IA
-* `authelia_config` - Configuration SSO et utilisateurs
-* `headscale_config` - Configuration VPN mesh et clés
-* `headscale_data` - Base de données Headscale
-* `uptime_kuma_data` - Configuration monitoring uptime
-* `mediawiki_data` - Contenu du wiki
-* `mediawiki_db` - Base de données MediaWiki
+* `/docker/services/nextcloud/app/` - Fichiers config Nextcloud
+* `/docker/services/plex/config/` - Bibliothèque, métadonnées, vues
+* `/docker/services/grafana/` - Dashboards personnalisés
+* `/docker/services/open-webui/` - Historique des conversations IA
+* `/docker/services/authelia/` - Configuration SSO et utilisateurs
+* `/docker/services/headscale/config/` - Configuration VPN mesh et clés
+* `/docker/services/headscale/data/` - Base de données Headscale
+* `/docker/services/uptime-kuma/` - Configuration monitoring uptime
+* `/docker/services/mediawiki/data/` - Contenu du wiki
+* `/docker/services/mediawiki/db/` - Base de données MediaWiki
 
 ### 🟢 Priorité MOYENNE (Sauvegarde mensuelle)
 
 Configurables mais fastidieux à recréer.
 
-* `radarr_config`, `sonarr_config`, `prowlarr_config`
-* `prometheus_data` - Historique des métriques (15 jours de rétention)
+* `/docker/services/radarr/`, `/docker/services/sonarr/`, `/docker/services/prowlarr/`
+* `/docker/services/prometheus/` - Historique des métriques (15 jours de rétention)
 
 > 📝 **Outil recommandé** : Kopia pour les sauvegardes incrémentales chiffrées vers le cloud (Backblaze B2, Wasabi).
 
@@ -157,12 +157,12 @@ docker logs watchtower -f
 
 **Configuration** :
 ```yaml
-# Fichier de configuration : /config/configuration.yml
-default_redirection_url: https://home.example.com
+# Fichier de configuration : /docker/services/authelia/configuration.yml
+default_redirection_url: https://home.du-cray.eu
 
 access_control:
   rules:
-    - domain: "*.example.com"
+    - domain: "*.du-cray.eu"
       policy: two_factor
 ```
 
@@ -174,7 +174,7 @@ Le conteneur `qbittorrent` agit comme une passerelle sécurisée pour tout le tr
 
 * **Image** : `binhex/arch-qbittorrentvpn`
 * **Protocole** : OpenVPN (configuration custom)
-* **Fournisseur VPN** : [Préciser le fournisseur]
+* **Fournisseur VPN** : GhostVPN
 * **Killswitch** : Actif - Si le tunnel VPN tombe, l'accès internet du conteneur est coupé
 * **Vérification IP** : Accessible via WebUI (8080) > Paramètres > Connexion
 

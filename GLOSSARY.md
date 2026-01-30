@@ -17,7 +17,8 @@ Ce document définit les termes techniques, acronymes et concepts utilisés dans
 | **iRMC** | Integrated Remote Management Controller (Fujitsu) | [01_infrastructure.md](./01_infrastructure.md) |
 | **MergerFS** | Système de fichiers d'union pour pooler plusieurs disques | [dataflow.md](./dataflow.md) |
 | **SnapRAID** | Solution de parité pour protection contre pannes disques | [dataflow.md](./dataflow.md) |
-| **VPN** | Virtual Private Network - Tunnel chiffré pour Qbittorrent | [03_maintenance_drp.md](./03_maintenance_drp.md) |
+| **VPN** | Virtual Private Network - Tunnel chiffré pour Qbittorrent (GhostVPN) | [03_maintenance_drp.md](./03_maintenance_drp.md) |
+| **VPN Mesh** | Réseau VPN maillé point-à-point (Headscale/Tailscale) | [02_applications.md](./02_applications.md) |
 
 ### Stockage
 
@@ -66,6 +67,7 @@ Ce document définit les termes techniques, acronymes et concepts utilisés dans
 | Terme | Définition | Documentation |
 |-------|------------|---------------|
 | **Authelia** | Solution SSO open-source avec 2FA | [02_applications.md](./02_applications.md) |
+| **Headscale** | Serveur VPN mesh auto-hébergé (alt. Tailscale) | [02_applications.md](./02_applications.md) |
 | **Kopia** | Sauvegardes incrémentales avec déduplication | [02_applications.md](./02_applications.md) |
 | **Redis** | Cache en mémoire pour performances Nextcloud | [02_applications.md](./02_applications.md) |
 | **SSO** | Single Sign-On - Authentification unifiée | [03_maintenance_drp.md](./03_maintenance_drp.md) |
@@ -139,6 +141,8 @@ Voir [03_maintenance_drp.md](./03_maintenance_drp.md)
 | **Nextcloud** | 8081 | HTTP | DMZ → Internet |
 | **Grafana** | 3000 | HTTP | DMZ → Internet |
 | **Authelia** | 9091 | HTTP | DMZ → Internet |
+| **Headscale** | 9999 | HTTP | DMZ → Internet |
+| **Headscale UI** | 9092 | HTTP | DMZ → Internet |
 | **Kopia** | 8200 | HTTP | DMZ → Internet |
 | **MediaWiki** | 8083 | HTTP | DMZ → Internet |
 | **Dashboard** | 8089 | HTTP | DMZ → Internet |

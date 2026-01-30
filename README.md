@@ -85,6 +85,8 @@ Bienvenue dans la documentation technique du serveur domestique **Antigravity**.
 
 > 💡 **Point d'entrée recommandé** : Dashboard (port 8089) qui centralise l'accès à tous les services.
 
+> 🌐 **Reverse Proxy** : Nginx Proxy Manager gère l'accès HTTPS et les certificats SSL pour le domaine `*.du-cray.eu`.
+
 ---
 
 ## 📞 Support et Contribution
@@ -96,4 +98,4 @@ Pour toute question ou amélioration, veuillez consulter les diagrammes appropri
 
 ---
 
-*Dernière mise à jour : 18/01/2026*
+*Dernière mise à jour : 30/01/2026*

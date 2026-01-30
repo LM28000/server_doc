@@ -113,7 +113,7 @@ Contient les fichiers de configuration Docker Compose :
 - `headscale.yaml` - VPN maillé auto-hébergé (mesh VPN)
 - `kopia.yaml` - Sauvegardes incrémentales
 - `mediawiki.yaml` - Wiki personnel
-- `securedmz.yaml` - Stack principale (37+ services)
+- `securedmz.yaml` - Stack principale (26 services)
 
 ---
 
@@ -203,4 +203,4 @@ Contient les fichiers de configuration Docker Compose :
 
 ---
 
-*Ce fichier est généré automatiquement. Dernière mise à jour : 18/01/2026*
+*Ce fichier est généré automatiquement. Dernière mise à jour : 30/01/2026*
