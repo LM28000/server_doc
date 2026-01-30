@@ -53,11 +53,13 @@ Liste exhaustive de tous les conteneurs Docker déployés sur le serveur Antigra
 
 ---
 
-## 🔐 Sécurité & Authentification (3 services)
+## 🔐 Sécurité & Authentification (5 services)
 
 | Service | Image | Port(s) | Réseau | Description |
 |---------|-------|---------|--------|-------------|
 | **Authelia** | `authelia/authelia` | 9091 | DMZ | SSO avec 2FA |
+| **Headscale** | `headscale/headscale` | 9999 | DMZ | Serveur VPN maillé (mesh) |
+| **Headscale UI** | `gurucomputing/headscale-ui` | 9092 | DMZ | Interface web pour Headscale |
 | **Vaultwarden** | `vaultwarden/server` | 8084, 3012 | DMZ | Gestionnaire de mots de passe |
 | **Kopia** | `kopia/kopia` | 8200 | DMZ | Sauvegardes chiffrées |
 

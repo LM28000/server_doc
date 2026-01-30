@@ -43,6 +43,8 @@ Gain de temps significatif à la restauration.
 * `grafana_data` - Dashboards personnalisés
 * `open_webui_data` - Historique des conversations IA
 * `authelia_config` - Configuration SSO et utilisateurs
+* `headscale_config` - Configuration VPN mesh et clés
+* `headscale_data` - Base de données Headscale
 * `uptime_kuma_data` - Configuration monitoring uptime
 * `mediawiki_data` - Contenu du wiki
 * `mediawiki_db` - Base de données MediaWiki

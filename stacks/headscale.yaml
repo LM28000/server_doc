@@ -1,0 +1,19 @@
+services:
+  headscale:
+    image: headscale/headscale:latest
+    container_name: headscale
+    restart: unless-stopped
+    volumes:
+      - /docker/services/headscale/config:/etc/headscale
+      - /docker/services/headscale/data:/var/lib/headscale
+    # On expose le port pour que NPM puisse le joindre sur l'IP du serveur
+    ports:
+      - "9999:8080"
+    command: serve -c /etc/headscale/config.yaml
+
+  headscale-ui:
+    image: ghcr.io/gurucomputing/headscale-ui:latest
+    restart: unless-stopped
+    container_name: headscale-ui
+    ports:
+      - 9092:8080

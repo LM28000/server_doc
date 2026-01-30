@@ -110,6 +110,7 @@ Navigation rapide vers tous les documents du serveur Antigravity.
 ### stacks/
 Contient les fichiers de configuration Docker Compose :
 - `authelia.yaml` - Authentification unifiée (SSO)
+- `headscale.yaml` - VPN maillé auto-hébergé (mesh VPN)
 - `kopia.yaml` - Sauvegardes incrémentales
 - `mediawiki.yaml` - Wiki personnel
 - `securedmz.yaml` - Stack principale (37+ services)

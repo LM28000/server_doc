@@ -41,6 +41,8 @@ flowchart TD
     direction LR
         DASH("Dashboard")
         AUTH("Authelia (SSO)")
+        HS("Headscale (VPN)")
+        HSUI("Headscale UI")
         RC("Roundcube")
         AB("Actual Budget")
         PL("Plex")
@@ -124,7 +126,7 @@ flowchart TD
 
 #### 🟢 DMZ (Zone Exposée)
 
-**Services** : Plex, Overseerr, Nextcloud, Grafana, Vaultwarden, Open WebUI, Dashboard, Authelia, Kopia, MediaWiki, Uptime Kuma, Dozzle, Glances, IT-Tools, TTYD  
+**Services** : Plex, Overseerr, Nextcloud, Grafana, Vaultwarden, Open WebUI, Dashboard, Authelia, Headscale, Headscale UI, Kopia, MediaWiki, Uptime Kuma, Dozzle, Glances, IT-Tools, TTYD  
 **Accès** : Internet → Reverse Proxy → DMZ  
 **Restriction** : Pas d'accès direct aux services backend
 

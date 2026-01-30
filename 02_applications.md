@@ -71,9 +71,12 @@ Stack dédiée à l'inférence locale de LLM.
 | Service | Rôle | Ports | Réseau | Notes |
 | :--- | :--- | :--- | :--- | :--- |
 | **Authelia** | SSO | `9091` | DMZ | Authentification unifiée (SSO) pour tous les services. 2FA support. |
+| **Headscale** | VPN Maillé | `9999` | DMZ | Serveur VPN mesh open-source (alternative Tailscale). Accès sécurisé aux services. |
+| **Headscale UI** | Interface Web | `9092` | DMZ | Interface de gestion web pour Headscale. |
 | **Kopia** | Sauvegardes | `8200` | DMZ | Sauvegardes incrémentales chiffrées. Accès `/docker` en lecture seule. |
 
 > 🔑 **Authelia** : Fournit une authentification centralisée avec support 2FA (TOTP) pour tous les services exposés.  
+> 🌐 **Headscale** : VPN mesh auto-hébergé pour accès sécurisé distant à tous les services du homelab.  
 > 💾 **Kopia** : Solution de sauvegarde moderne avec déduplication, chiffrement et support multi-cloud.
 
 ---

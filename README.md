@@ -71,6 +71,8 @@ Bienvenue dans la documentation technique du serveur domestique **Antigravity**.
 |---------|------|-------------|-----------|
 | **Dashboard** | 8089 | Via reverse proxy | 🏠 Accueil |
 | **Authelia** | 9091 | Via reverse proxy | 🔐 SSO |
+| **Headscale** | 9999 | Via reverse proxy | 🌐 VPN |
+| **Headscale UI** | 9092 | Via reverse proxy | 🌐 VPN |
 | **Plex** | 32400 | Via reverse proxy | 🎬 Média |
 | **Overseerr** | 5000 | Via reverse proxy | 🎬 Média |
 | **Nextcloud** | 8081 | Via reverse proxy | ☁️ Cloud |

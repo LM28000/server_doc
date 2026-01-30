@@ -64,6 +64,8 @@ mindmap
     Sécurité
       Authelia
         (SSO/2FA)
+      Headscale
+        (VPN Mesh)
       Kopia
         (Sauvegardes)
       Vaultwarden
@@ -101,11 +103,11 @@ L'écosystème est centré autour de 5 piliers majeurs :
 | **Système** | 4 | Nextcloud, Redis, Watchtower |
 | **Monitoring** | 8 | Prometheus, Grafana, Uptime Kuma |
 | **IA** | 2 | Ollama, Open WebUI |
-| **Sécurité** | 3 | Authelia, Kopia, Vaultwarden |
+| **Sécurité** | 5 | Authelia, Headscale, Headscale UI, Kopia, Vaultwarden |
 | **Cloud & Productivité** | 5 | Nextcloud, Roundcube, Actual Budget, MediaWiki |
 | **Outils** | 5 | Dashboard, IT-Tools, Dozzle, Glances, TTYD |
 
-**Total** : 37+ conteneurs actifs
+**Total** : 39+ conteneurs actifs
 
 ### Ressources Consommées
 
